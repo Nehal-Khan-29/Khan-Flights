@@ -446,8 +446,7 @@ def aboutpage():
     aboutpanel.pack(side='top',fill='both',expand='yes')
 
     def help():
-        Label(about,text='''COSTUMER SERVICE NUMBER : +91 8438394310 (INDIA)
-            MAIL ID                      : nehal292004@gmail.com''',font=('Arial',16)).place(x=750,y=550)
+        Label(about,text='''COSTUMER SERVICE NUMBER : Like hell I would give it to you (INDIA)''',font=('Arial',16)).place(x=750,y=550)
 
     Button(about,text='Contact Us',font=('Arial',20),command=help,height=1,width=16,bg='Lightsteelblue2',
     fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(x=800,y=500)
