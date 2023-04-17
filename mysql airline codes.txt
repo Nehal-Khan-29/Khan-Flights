@@ -1,0 +1,33 @@
+1.  create database khan_flights;
+
+2.  use khan_flights;
+
+3.  create table flights(FLIGHT_NAME varchar(20), FROM_CITY char(20), TO_CITY char(20), BUISNESS_CLASS_PRICE int, DEPARTURE_TIME time, ARRIVAL_TIME time);
+
+4.  create table user(FLIGHT_No varchar(20), FROM_CITY char(20), TO_CITY char(20), BUISNESS_CLASS_PRICE int, DEPARTURE_TIME time, ARRIVAL_TIME time);
+
+5.  insert into flights values('bc', 'bangalore', 'chennai', 9000, '18:30:00', '19:35:00');
+
+6.  insert into flights values('bh', 'bangalore', 'hyderabad', 11000, '12:30:00', '13:35:00');
+
+7.  insert into flights values('bm', 'bangalore', 'mumbai', 15500, '14:20:00', '16:35:00');
+
+8.  insert into flights values('cb', 'chennai', 'bangalore', 12500, '15:20:00', '16:45:00');
+
+9.  insert into flights values('ch', 'chennai', 'hyderabad', 15500, '09:20:00', '10:45:00');
+
+10.  insert into flights values('cm', 'chennai', 'mumbai', 13500, '09:40:00', '10:45:00');
+
+11.  insert into flights values('hb', 'hyderabad', 'bangalore', 17500, '11:40:00', '12:55:00');
+
+12.  insert into flights values('hc', 'hyderabad', 'chennai', 11500, '17:15:00', '18:45:00');
+
+13.  insert into flights values('hm', 'hyderabad', 'mumbai', 13500, '16:30:00', '18:00:00');
+
+14.  insert into flights values('mb', 'mumbai', 'bangalore', 14500, '16:30:00', '18:00:00');
+
+15.  insert into flights values('mc', 'mumbai', 'chennai', 14500, '17:30:00', '18:00:00');
+
+16  insert into flights values('mh', 'mumbai', 'hyderabad', 13500, '19:30:00', '21:00:00');
+
+
