@@ -66,7 +66,7 @@ def login():
 
     if (username==''or password==''):
         messagebox.showinfo('Error','Please fill the username and password')
-    elif (username=='.' and password=='.'):
+    elif (username=='user' and password=='user'):
         messagebox.showinfo('Logged in','Logged in successfully')
         logwin.destroy()
     else:
