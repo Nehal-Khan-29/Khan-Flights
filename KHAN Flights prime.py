@@ -9,7 +9,7 @@ from PIL import ImageTk,Image
 
 # MySQL Connecting:
 
-mydb=mysql.connector.connect(host='localhost',user='root',password='nehal292004!',database='khan_flights')
+mydb=mysql.connector.connect(host='localhost',user='root',password='password',database='khan_flights')
 
 # Treeview:
 
