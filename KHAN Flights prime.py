@@ -527,6 +527,7 @@ def cancelpage():
     cancelreeview(cancel,6,0.065,0.08)
     treview(cancel,6,0.065,0.3)
 
+        
     global ROWS
     mycur=mydb.cursor()
     q = "select * from {}".format(username)
@@ -534,6 +535,14 @@ def cancelpage():
     ROWS=mycur.fetchall()
     for ROW in ROWS:
         ree.insert('',tk.END,values=ROW)
+        
+    
+    q= "select * from passengers where group_id ='{}'".format(username)
+    mycur.execute(q)
+    RO=mycur.fetchall()
+    for R in RO:
+        val = R[1:]
+        tre.insert('',tk.END,values=val)
 
     Label(cancel,text=" FLIGHT NAME TO BE CANCELED ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=450)
     Label(cancel,text=" FLIGHT DATE ( yyyy-mm-dd ) ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=500)
@@ -581,7 +590,7 @@ def aboutpage():
     Button(about,text='Contact Us',font=('Arial',20),command=help,height=1,width=16,bg='Lightsteelblue2',
     fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(x=800,y=500)
 
-    Label(about,text=('''This program is created by Nehal Khan on 13 January 2023. With the help 
+    Label(about,text=('''This program is created by Nehal Khan on 21 July 2023. With the help 
     of online classes, our mentors, and our beloved friends we were able to create this program successfuly'''),font=('Arial',15),bg='Lightsteelblue2').place(x=250,y=50)
 
     Label(about,text=(""),font=('Arial',16),bg='pink').place(x=150,y=345)
@@ -694,8 +703,8 @@ Label(home,text=('Business Class Account'),font=('Arial',16),bg='Lightsteelblue2
 Label(home,text=(username),font=('Arial',16),bg='Lightsteelblue2').place(x=1050,y=150) 
 Label(home,text=('Logged in: '+currtime+', '+currdate),font=('Arial',16),bg='pink').place(x=1050,y=100)
 
-Label(home,text=('''Disclaimer --- This project is totally offline and fake. This project do not indicate 
-                 the original Khan flight company and its softwares. This is just for project purpose and not for
+Label(home,text=('''Disclaimer --- This project is totally offline and fake. This project does not indicate 
+                 the original Khan Flight company and its software. This is just for project purposes and not for
                  publishing anywhere...'''),
                  font=('Arial',12),bg='Lightsteelblue2',borderwidth=1,relief='solid').place(relx=0.25,rely=0.85)
 
