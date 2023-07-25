@@ -4,19 +4,27 @@ from tkinter import messagebox
 from tkinter import ttk
 import mysql.connector
 from datetime import date
+import datetime
 import time
 from PIL import ImageTk,Image
 
 # MySQL Connecting:
 
-mydb=mysql.connector.connect(host='localhost',user='root',password='password',database='khan_flights')
+mydb=mysql.connector.connect(host='localhost',user='root',password='nehal292004!',database='khan_flights')
+
+mcursor = mydb.cursor()
+update_query = "UPDATE flights SET FLIGHT_DATE = %s"
+current_date = date.today()
+mcursor.execute(update_query, (current_date,))
+mydb.commit()
+
 
 # Treeview:
 
 def treeview(page,h,px,py):
 
     global tree
-    tree=ttk.Treeview(page,column=('#c1','#c2','#c3','#c4','#c5','#c6'),show='headings',height=h)
+    tree=ttk.Treeview(page,column=('#c1','#c2','#c3','#c4','#c5','#c6','#c7','#c8'),show='headings',height=h)
 
     tree.column('#1',width=140,minwidth=140,anchor=tk.CENTER)
     tree.column('#2',width=140,minwidth=140,anchor=tk.CENTER)
@@ -24,6 +32,8 @@ def treeview(page,h,px,py):
     tree.column('#4',width=140,minwidth=140,anchor=tk.CENTER)
     tree.column('#5',width=140,minwidth=140,anchor=tk.CENTER)
     tree.column('#6',width=140,minwidth=140,anchor=tk.CENTER)
+    tree.column('#7',width=140,minwidth=140,anchor=tk.CENTER)
+    tree.column('#8',width=140,minwidth=140,anchor=tk.CENTER)
     
     tree.heading('#1',text='FLIGHT NAME')
     tree.heading('#2',text='FROM CITY')
@@ -31,14 +41,55 @@ def treeview(page,h,px,py):
     tree.heading('#4',text='BUSINESS CLASS PRICE')
     tree.heading('#5',text='DEPARTURE TIME')
     tree.heading('#6',text='ARRIVAL TIME')
+    tree.heading('#7',text='FLIGHT DATE')
+    tree.heading('#8',text='AVAILABLE SEATS')
     tree.place(relx=px,rely=py)
+    
+    
+def treview(page,h,px,py):
+
+    global tre
+    
+    tre=ttk.Treeview(page,column=('#c1','#c2','#c3','#c4','#c5','#c6','#c7','#c8','#c9','#c10','#c11','#c12','#c13'),show='headings',height=h)
+
+    tre.column('#1',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#2',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#3',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#4',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#5',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#6',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#7',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#8',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#9',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#10',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#11',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#12',width=100,minwidth=100,anchor=tk.CENTER)
+    tre.column('#13',width=100,minwidth=100,anchor=tk.CENTER)
+
+    
+
+    tre.heading('#1',text='NAME 1')
+    tre.heading('#2',text='NAME 2')
+    tre.heading('#3',text='NAME 3')
+    tre.heading('#4',text='NAME 4')
+    tre.heading('#5',text='AGE 1')
+    tre.heading('#6',text='AGE 2')
+    tre.heading('#7',text='AGE 3')
+    tre.heading('#8',text='AGE 4')
+    tre.heading('#9',text='FLIGHT NAME')
+    tre.heading('#10',text='FLIGHT DATE')
+    tre.heading('#11',text='PHONE')
+    tre.heading('#12',text='EMAIL')
+    tre.heading('#13',text='SEATS')
+    
+    tre.place(relx=px,rely=py)
 
 # cancel tree view
 
 def cancelreeview(page,H,Px,Py):
 
     global ree
-    ree=ttk.Treeview(page,column=('#c1','#c2','#c3','#c4','#c5','#c6'),show='headings',height=H)
+    ree=ttk.Treeview(page,column=('#c1','#c2','#c3','#c4','#c5','#c6','#c7'),show='headings',height=H)
 
     ree.column('#1',width=140,minwidth=140,anchor=tk.CENTER)
     ree.column('#2',width=140,minwidth=140,anchor=tk.CENTER)
@@ -46,6 +97,7 @@ def cancelreeview(page,H,Px,Py):
     ree.column('#4',width=140,minwidth=140,anchor=tk.CENTER)
     ree.column('#5',width=140,minwidth=140,anchor=tk.CENTER)
     ree.column('#6',width=140,minwidth=140,anchor=tk.CENTER)
+    ree.column('#7',width=140,minwidth=140,anchor=tk.CENTER)
     
     ree.heading('#1',text='FLIGHT NAME')
     ree.heading('#2',text='FROM CITY')
@@ -53,6 +105,7 @@ def cancelreeview(page,H,Px,Py):
     ree.heading('#4',text='BUSINESS CLASS PRICE')
     ree.heading('#5',text='DEPARTURE TIME')
     ree.heading('#6',text='ARRIVAL TIME')
+    ree.heading('#7',text='FLIGHT DATE')
     ree.place(relx=Px,rely=Py)
 
 # Login System:
@@ -64,62 +117,93 @@ def login():
     username=entry1.get()
     password=entry2.get()
 
-    if (username==''or password==''):
-        messagebox.showinfo('Error','Please fill the username and password')
-    elif (username=='user' and password=='user'):
-        messagebox.showinfo('Logged in','Logged in successfully')
-        logwin.destroy()
+    if (username == '' or password == ''):
+            messagebox.showinfo('Error', 'Please fill the username and password')
     else:
-        messagebox.showinfo('Error','Incorrect Username or Password - Try Again')
+        mcursor = mydb.cursor()
+        query_check = "SELECT * FROM accounts WHERE USERNAME='{}' AND PASSWORD='{}'".format(username, password)
+        mcursor.execute(query_check)
+        existing_user = mcursor.fetchone()
+
+        if existing_user:
+            messagebox.showinfo('Logged in', 'Logged in successfully')
+            logwin.destroy()
+        else:
+            messagebox.showinfo('Error', 'Incorrect Username or Password - Try Again')
 
 
 # Delete function
 
 def delete():
-    global f_no,pas
+    global f_no,pas,flight_found,da
     f_no=a.get()
     pas=b.get()
+    da=d.get()
     if (pas==password):
         rowcutter()
-        messagebox.showinfo('cancel ticket','''                             Ticket canceled successfully
+        if flight_found:  
+            messagebox.showinfo('cancel ticket','''                             Ticket canceled successfully
     Refund will be transferred to your SBI account in 5 minutes''')
-        cancel.destroy()                 
+            cancel.destroy()       
+        else:
+            cancel.destroy()       
     else:
         Label(cancel,text=('Enter a valid flight number or password'),font=('Arial',13),bg='pink').place(x=650,y=550)
+        
 
 
 # ROWCUTTER()
 def rowcutter():
+          
+    global ROWS,flight_found
     
-    if f_no=="bc":
-        sq="delete from user where FLIGHT_NAME = 'bc'"
-    elif f_no=="bh":
-        sq="delete from user where FLIGHT_NAME = 'bh'"
-    elif f_no=="bm":
-        sq="delete from user where FLIGHT_NAME = 'bm'"   
-    elif f_no=="cb":
-        sq="delete from user where FLIGHT_NAME = 'cb'"
-    elif f_no=="ch":
-        sq="delete from user where FLIGHT_NAME = 'ch'"      
-    elif f_no=="cm":  
-        sq="delete from user where FLIGHT_NAME = 'cm'"         
-    elif f_no=="hb": 
-        sq="delete from user where FLIGHT_NAME = 'hb'"     
-    elif f_no=="hc":
-        sq="delete from user where FLIGHT_NAME = 'hc'"
-    elif f_no=="hm":
-        sq="delete from user where FLIGHT_NAME = 'hm'"
-    elif f_no=="mb":  
-        sq="delete from user where FLIGHT_NAME = 'mb'"
-    elif f_no=="mc":
-        sq="delete from user where FLIGHT_NAME = 'mc'"
-    elif f_no=="mh":
-        sq="delete from user where FLIGHT_NAME = 'mh'"
+    sql_query = "SELECT * FROM flights WHERE Flight_name='{}' AND Flight_date = '{}'".format(f_no, da)
+    mycur=mydb.cursor()
+    mycur.execute(sql_query)
+    ro = mycur.fetchone()
+        
+    sql_query = "SELECT * FROM passengers WHERE Group_ID = '{}' AND Flight_name='{}' AND Flight_date = '{}'".format(username,f_no, da)
+    mycur=mydb.cursor()
+    mycur.execute(sql_query)
+    i = mycur.fetchone()
 
-    mcursor=mydb.cursor()
-    mcursor.execute(sq)
-    mydb.commit()
+    if ro[0]==f_no and ro[6]==datetime.date(int(da[0:4]), int(da[5:7]), int(da[8:])):
+        sql="update flights set available_seats = {} where Flight_name = '{}' and Flight_date = '{}'".format(ro[7]+i[13],f_no,da)
+        mycur.execute(sql)
+        mydb.commit()
     
+    
+    mycur=mydb.cursor()
+    q = "select * from {}".format(username)
+    mycur.execute(q)
+    ROWS=mycur.fetchall()
+    flight_found = False
+    for row in ROWS:
+        #print(row)
+        if row[0] == f_no and row[6] == datetime.date(int(da[0:4]), int(da[5:7]), int(da[8:])):
+            flight_found = True
+            sq = "DELETE FROM {} WHERE FLIGHT_NAME = '{}' AND FLIGHT_DATE = '{}'".format(username, f_no, da)
+            mcursor = mydb.cursor()
+            mcursor.execute(sq)
+            mydb.commit()
+            
+    q1 = "select * from passengers"
+    mycur.execute(q1)
+    ROWS=mycur.fetchall()
+    for row in ROWS:
+        if row[0] == username and row[10] == datetime.date(int(da[0:4]), int(da[5:7]), int(da[8:])):
+            sq = "DELETE FROM passengers WHERE Group_ID = '{}' AND  Flight_name = '{}' AND Flight_date = '{}'".format(username, f_no, da)
+            mcursor = mydb.cursor()
+            mcursor.execute(sq)
+            mydb.commit()
+
+    if not flight_found:
+        messagebox.showerror('Error', 'No flight found')
+        
+    
+                
+
+
 
 # Profile Page:
 
@@ -135,21 +219,29 @@ def profilepage():
     profpanel=Label(userprof,image=profpic)
     profpanel.pack(side='top',fill='both',expand='yes')
     
-    Label(userprof,text=('Business Class Account'),font=('Arial',16),bg='Lightsteelblue2').place(x=1080,y=50)  
-    Label(userprof,text=(username),font=('Arial',16),bg='Lightsteelblue2').place(x=1080,y=100)
-    Label(userprof,text=("Email : nehal292004@gmail.com"),font=('Arial',16),bg='Lightsteelblue2').place(x=1080,y=150)
-    Label(userprof,text=("mobile : +91 8438394310"),font=('Arial',16),bg='Lightsteelblue2').place(x=1080,y=200)
+    Label(userprof,text=('Business Class Account'),font=('Arial',16),bg='Lightsteelblue2').place(x=1180,y=50)  
+    Label(userprof,text=(username),font=('Arial',16),bg='Lightsteelblue2').place(x=1180,y=100)
+    Label(userprof,text=(currdate),font=('Arial',16),bg='Lightsteelblue2').place(x=1180,y=150)
 
-    Label(userprof,text=('YOUR BOOKED FLIGHTS'),font=('Arial',15),bg='white').place(relx=0.1,rely=0.665)
-
-    cancelreeview(userprof,6,0.1,0.7)
+    Label(userprof,text=('YOUR BOOKED FLIGHTS'),font=('Arial',15),bg='white').place(relx=0.07,rely=0.1)
+    cancelreeview(userprof,6,0.07,0.17)
+    Label(userprof,text=('YOUR TICKET'),font=('Arial',15),bg='white').place(relx=0.07,rely=0.4)
+    treview(userprof,6,0.07,0.47)
 
     global ROWS
     mycur=mydb.cursor()
-    mycur.execute('SELECT * FROM user')
+    q= "select * from {}".format(username)
+    mycur.execute(q)
     ROWS=mycur.fetchall()
     for ROW in ROWS:
         ree.insert('',tk.END,values=ROW)
+        
+    q= "select * from passengers where group_id ='{}'".format(username)
+    mycur.execute(q)
+    RO=mycur.fetchall()
+    for R in RO:
+        val = R[1:]
+        tre.insert('',tk.END,values=val)
 
     userprof.mainloop()
 
@@ -205,39 +297,152 @@ def bookpage():
         global t
         t=tobox.get()
 
-    def billing():
-        global billwin
+    def addpeople():
+        global addpwin,n1,n2,n3,n4,a1,a2,a3,a4,e,ph
+        
+        addpwin=tk.Toplevel()
+        addpwin.title('Khan FLIGHTS - Add Passengers')
+        addpwin.geometry('1366x768')
+        addpwin.state('zoomed')
+        addpwin.protocol('WM_DELETE_WINDOW',addpclose)
 
+        addpwinpic=ImageTk.PhotoImage(Image.open("E:\\NK Programs\\Python\\python save\\Khan Flights\\NK FLIGHT.png"))
+        addpwinpanel=Label(addpwin,image=addpwinpic)
+        addpwinpanel.pack(side='top',fill='both',expand='yes')
+        
+        Label(addpwin,text=" LEAVE SPACE for no passenger ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=100)
+        
+        Label(addpwin,text=" Person 1 Name ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=150)
+        Label(addpwin,text=" Person 2 Name ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=200)
+        Label(addpwin,text=' Person 3 Name ',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=250)
+        Label(addpwin,text=' Person 4 Name ',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=300)
+
+        n1=Entry(addpwin)
+        n1.place(x=370,y=150)
+        n1.config(borderwidth=2,relief='sunken')
+        
+        n2=Entry(addpwin)
+        n2.place(x=370,y=200)
+        n2.config(borderwidth=2,relief='sunken')
+
+        n3=Entry(addpwin)
+        n3.place(x=370,y=250)
+        n3.config(borderwidth=2,relief='sunken')
+        
+        n4=Entry(addpwin)
+        n4.place(x=370,y=300)
+        n4.config(borderwidth=2,relief='sunken')
+        
+        Label(addpwin,text=" Person 1 age ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=350)
+        Label(addpwin,text=" Person 2 age ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=400)
+        Label(addpwin,text=' Person 3 age ',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=450)
+        Label(addpwin,text=' Person 4 age ',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=500)
+
+        a1=Entry(addpwin)
+        a1.place(x=370,y=350)
+        a1.config(borderwidth=2,relief='sunken')
+        
+        a2=Entry(addpwin)
+        a2.place(x=370,y=400)
+        a2.config(borderwidth=2,relief='sunken')
+
+        a3=Entry(addpwin)
+        a3.place(x=370,y=450)
+        a3.config(borderwidth=2,relief='sunken')
+        
+        a4=Entry(addpwin)
+        a4.place(x=370,y=500)
+        a4.config(borderwidth=2,relief='sunken')
+        
+        Label(addpwin,text=' Phone number ',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=550)
+        Label(addpwin,text=' Email ',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=600)
+
+        ph=Entry(addpwin)
+        ph.place(x=370,y=550)
+        ph.config(borderwidth=2,relief='sunken')
+        
+        e=Entry(addpwin)
+        e.place(x=370,y=600)
+        e.config(borderwidth=2,relief='sunken')
+        
+        Button(addpwin,text='Add Now',font=('Arial',16),command=billing,height=1,width=16,bg='DarkOrchid1',
+        fg='gray6',activebackground='gray12',activeforeground='thistle1').place(x=800,y=600)
+
+        addpwin.mainloop()
+
+            
+            
+        
+         
+    def billing():
+        global billwin, numseats
+
+        name1=n1.get()
+        name2=n2.get()
+        name3=n3.get()
+        name4=n4.get()
+        age1=a1.get()
+        age2=a2.get()
+        age3=a3.get()
+        age4=a4.get()
+        phone=ph.get()
+        email=e.get()
+
+        if name1!=' ':
+            numseats = 1
+            if name2!=' ':
+                numseats = 2
+                if name3!=' ':
+                    numseats = 3
+                    if name4!=' ':
+                        numseats = 4
+                        
+        sql='''insert into passengers(Group_ID, Name_1, Name_2, Name_3, Name_4,  age_1,  age_2,  age_3,  age_4,  Flight_name,  Flight_date,  phone, email, total_seats)
+        values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}',{},'{}',{})'''.format(username,name1,name2,name3,name4,age1,age2,age3,age4,r[0],r[6],phone,email,numseats)
+        mycur.execute(sql)
+        mydb.commit()
+        
+        sql="update flights set available_seats = {} where Flight_name = '{}'".format(r[7]-numseats,r[0])
+        mycur.execute(sql)
+        mydb.commit()
+        
+        
         def insert():
-                sql='''insert into user(FLIGHT_NAME, FROM_CITY, TO_CITY, BUISNESS_CLASS_PRICE, DEPARTURE_TIME, ARRIVAL_TIME) 
-                values(%s,%s,%s,%s,%s,%s)'''
-                mycur.execute(sql,r)
+                sql='''insert into {}(FLIGHT_NAME, FROM_CITY, TO_CITY, BUISNESS_CLASS_PRICE, DEPARTURE_TIME, ARRIVAL_TIME, FLIGHT_DATE)
+                values(%s,%s,%s,%s,%s,%s,%s)'''.format(username)
+                mycur.execute(sql,rr)
                 mydb.commit()
                 messagebox.showinfo('Booked','Flight booked successfully')
+                addpwin.destroy()
                 billwin.destroy()
                 book.destroy()
+                
 
         if messagebox.askokcancel('Confirm Booking','Do you want to book this flight?',parent=book):
             billwin=tk.Toplevel()
             billwin.title('Khan FLIGHTS - BILLING')
-            billwin.geometry('600x354')
+            billwin.geometry('600x400')
             billwin.resizable(False,False)
             billwin.protocol('WM_DELETE_WINDOW',billclose)
 
             billwinpic=ImageTk.PhotoImage(Image.open("E:\\NK Programs\\Python\\python save\\Khan Flights\\transaction.jpg"))
             billwinpanel=Label(billwin,image=billwinpic)
             billwinpanel.pack(side='top',fill='both',expand='yes')
+            
 
-            Label(billwin,text=('Username :',username),font=('Arial',12),bg='lavenderblush').place(x=20,y=150)
-            Label(billwin,text=('UserID :',username),font=('Arial',12),bg='lavenderblush').place(x=20,y=180)
+
+            Label(billwin,text=('UserName : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=180)
+            Label(billwin,text=(username),font=('Arial',12),bg='lavenderblush').place(x=107,y=180)
             Label(billwin,text=('Flight Name : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=210)
             Label(billwin,text=(r[0]),font=('Arial',12),bg='lavenderblush').place(x=120,y=210)
-            Label(billwin,text=('From : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=240)
-            Label(billwin,text=(f),font=('Arial',12),bg='lavenderblush').place(x=70,y=240)
-            Label(billwin,text=('To : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=270)
-            Label(billwin,text=(t),font=('Arial',12),bg='lavenderblush').place(x=50,y=270)
-            Label(billwin,text=('Amount : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=300)
-            Label(billwin,text=(p),font=('Arial',12),bg='lavenderblush').place(x=90,y=300)
+            Label(billwin,text=('Flight Date : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=240)
+            Label(billwin,text=(r[6]),font=('Arial',12),bg='lavenderblush').place(x=120,y=240)
+            Label(billwin,text=('From : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=270)
+            Label(billwin,text=(f),font=('Arial',12),bg='lavenderblush').place(x=70,y=270)
+            Label(billwin,text=('To : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=300)
+            Label(billwin,text=(t),font=('Arial',12),bg='lavenderblush').place(x=50,y=300)
+            Label(billwin,text=('Amount : '),font=('Arial',12),bg='lavenderblush').place(x=20,y=330)
+            Label(billwin,text=(p*numseats),font=('Arial',12),bg='lavenderblush').place(x=90,y=330)
 
             Button(billwin,text='Pay Now',font=('Arial',16),command=insert,height=1,width=16,bg='DarkOrchid1',
             fg='gray6',activebackground='gray12',activeforeground='thistle1').place(x=250,y=260)
@@ -245,7 +450,7 @@ def bookpage():
             billwin.mainloop()
 
     def findflight():
-        global rows,r,p,f,t
+        global rows,r,p,f,t,rr
 
         mycur=mydb.cursor()
         mycur.execute('SELECT * FROM Flights')
@@ -257,109 +462,24 @@ def bookpage():
 
         def fftv(r):
             tree.insert('',tk.END,values=r)
-
-        if f=='bangalore' and t=='chennai':
-            r=list(rows[0])
-            treeview(book,1,0.3,0.65)
+        
+        sql_query = "SELECT * FROM flights WHERE FROM_CITY='{}' AND TO_CITY='{}'".format(f,t)
+        mycur=mydb.cursor()
+        mycur.execute(sql_query)
+        row = mycur.fetchone()
+        
+        if row:
+            r = list(row) 
+            rr = r[0:-1]
+            treeview(book, 1, 0.25, 0.65)
             fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='bangalore' and t=='hyderabad':
-            r=list(rows[1])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='bangalore' and t=='mumbai':
-            r=list(rows[2])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='chennai' and t=='bangalore':
-            r=list(rows[3])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='chennai' and t=='hyderabad':
-            r=list(rows[4])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='chennai' and t=='mumbai':
-            r=list(rows[5])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='hyderabad' and t=='bangalore':
-            r=list(rows[6])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='hyderabad' and t=='chennai':
-            r=list(rows[7])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='hyderabad' and t=='mumbai':
-            r=list(rows[8])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='mumbai' and t=='bangalore':
-            r=list(rows[9])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='mumbai' and t=='chennai':
-            r=list(rows[10])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
-
-        elif f=='mumbai' and t=='hyderabad':
-            r=list(rows[11])
-            treeview(book,1,0.3,0.65)
-            fftv(r)
-            p=r[3]
-            Button(book,text='Book Now',font=('Arial',16),command=billing,height=1,width=16,bg='Lightsteelblue2',
+            p = r[3]
+            Button(book,text='Book Now',font=('Arial',16),command=addpeople,height=1,width=16,bg='Lightsteelblue2',
             fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
         
-
         else:
-                
             Label(book,text='Select a valid destination',font=('Arial',16),bg='tomato3').place(relx=0.5,rely=0.66)
-            Button(book,text='Book Now',font=('Arial',16),command=booknone,height=1,width=16,bg='Lightsteelblue2',
-            fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(relx=0.55,rely=0.87)
+
 
 
     sv1=tk.StringVar()
@@ -404,27 +524,36 @@ def cancelpage():
     cancelpanel=Label(cancel,image=cancelpic)
     cancelpanel.pack(side='top',fill='both',expand='yes')
 
-    cancelreeview(cancel,6,0.065,0.2)
+    cancelreeview(cancel,6,0.065,0.08)
+    treview(cancel,6,0.065,0.3)
 
     global ROWS
     mycur=mydb.cursor()
-    mycur.execute('SELECT * FROM user')
+    q = "select * from {}".format(username)
+    mycur.execute(q)
     ROWS=mycur.fetchall()
     for ROW in ROWS:
         ree.insert('',tk.END,values=ROW)
 
-    Label(cancel,text="FLIGHT NAME TO BE CANCELED",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=500)
+    Label(cancel,text=" FLIGHT NAME TO BE CANCELED ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=450)
+    Label(cancel,text=" FLIGHT DATE ( yyyy-mm-dd ) ",bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=500)
+    Label(cancel,text=' ACCOUNT PASSWORD ',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=550)
 
-    Label(cancel,text='ACCOUNT PASSWORD',bg='white',font=('Arial',12),borderwidth=1,relief='solid').place(x=100,y=550)
+    
 
-    global a,b
+    global a,b,d
 
     a=Entry(cancel)
-    a.place(x=350,y=500)
+    a.place(x=370,y=450)
     a.config(borderwidth=2,relief='sunken')
+    
+    d=Entry(cancel)
+    d.place(x=370,y=500)
+    d.config(borderwidth=2,relief='sunken')
+
 
     b=Entry(cancel)
-    b.place(x=350,y=550)
+    b.place(x=370,y=550)
     b.config(borderwidth=2,relief='sunken')
     b.config(show='*')
 
@@ -446,7 +575,8 @@ def aboutpage():
     aboutpanel.pack(side='top',fill='both',expand='yes')
 
     def help():
-        Label(about,text='''COSTUMER SERVICE NUMBER : Like hell I would give it to you (INDIA)''',font=('Arial',16)).place(x=750,y=550)
+        Label(about,text='''COSTUMER SERVICE NUMBER : +91 8438394310 (INDIA)
+            MAIL ID                      : nehal292004@gmail.com''',font=('Arial',16)).place(x=750,y=550)
 
     Button(about,text='Contact Us',font=('Arial',20),command=help,height=1,width=16,bg='Lightsteelblue2',
     fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(x=800,y=500)
@@ -473,6 +603,10 @@ def homelogout():
 def billclose():
      if messagebox.askokcancel('Quit','Do you want to quit?'):
         billwin.destroy()
+        
+def addpclose():
+     if messagebox.askokcancel('Quit','Do you want to cancel booking?'):
+        addpwin.destroy()
 
 def logclose():
 
@@ -486,6 +620,30 @@ def homeclose():
         home.destroy()
         quit()
 
+
+# new user:
+
+def newuser():
+    username = entry1.get()
+    query_check = "SELECT * FROM accounts WHERE USERNAME='{}'".format(username)
+    mcursor = mydb.cursor()
+    mcursor.execute(query_check)
+    existing_user = mcursor.fetchone()
+
+    if existing_user:
+        messagebox.showerror("Error", "Username already exists. Please choose a different username.")
+    else:
+        password = entry2.get()
+        query_insert = "INSERT INTO accounts (USERNAME, PASSWORD) VALUES ('{}', '{}')".format(username, password)
+        query2 = "create table {}(FLIGHT_NAME varchar(20), FROM_CITY char(20), TO_CITY char(20), BUISNESS_CLASS_PRICE int, DEPARTURE_TIME time, ARRIVAL_TIME time, FLIGHT_DATE date)".format(entry1.get())
+        mcursor.execute(query2)
+        mcursor.execute(query_insert)
+        mydb.commit()
+        messagebox.showinfo("Success", "Account created successfully!")
+     
+    
+    
+    
 # Login Page:
 
 logwin=tk.Tk()
@@ -512,6 +670,7 @@ entry2.place(x=200,y=55)
 entry2.config(borderwidth=2,relief='sunken')
 entry2.config(show='*')
 
+Button(logwin,text='Create',command=newuser,height=1,width=10).place(x=100,y=85)
 Button(logwin,text='Login',command=login,height=1,width=10).place(x=220,y=85)
 
 logwin.mainloop()
