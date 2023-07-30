@@ -11,7 +11,7 @@
 6.  insert into flights values('bh', 'bangalore', 'hyderabad', 11000, '12:30:00', '13:35:00');
 
 7.  insert into flights values('bm', 'bangalore', 'mumbai', 15500, '14:20:00', '16:35:00');
-
+ 
 8.  insert into flights values('cb', 'chennai', 'bangalore', 12500, '15:20:00', '16:45:00');
 
 9.  insert into flights values('ch', 'chennai', 'hyderabad', 15500, '09:20:00', '10:45:00');
