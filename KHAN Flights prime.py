@@ -590,7 +590,7 @@ def aboutpage():
     Button(about,text='Contact Us',font=('Arial',20),command=help,height=1,width=16,bg='Lightsteelblue2',
     fg='gray6',activebackground='Skyblue',activeforeground='thistle1').place(x=800,y=500)
 
-    Label(about,text=('''This program is created by Nehal Khan on 21 July 2023. With the help 
+    Label(about,text=('''This program is created by Nehal Khan on 30 July 2023. With the help 
     of online classes, our mentors, and our beloved friends we were able to create this program successfuly'''),font=('Arial',15),bg='Lightsteelblue2').place(x=250,y=50)
 
     Label(about,text=(""),font=('Arial',16),bg='pink').place(x=150,y=345)
@@ -650,8 +650,6 @@ def newuser():
         mydb.commit()
         messagebox.showinfo("Success", "Account created successfully!")
      
-    
-    
     
 # Login Page:
 
