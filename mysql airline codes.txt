@@ -30,4 +30,7 @@
 
 16  insert into flights values('mh', 'mumbai', 'hyderabad', 13500, '19:30:00', '21:00:00');
 
+17 create table accounts(username varchar(20), passwords varchar(20));
+
+
 
