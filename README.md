@@ -2,5 +2,5 @@
 A flight booking program with simple UI. 
 
 # Note:
-Change thee msql password
+Change thee msql password 
 
