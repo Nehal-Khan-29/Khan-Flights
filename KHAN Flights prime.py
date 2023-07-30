@@ -7,7 +7,7 @@ from datetime import date
 import datetime
 import time
 from PIL import ImageTk,Image
-
+ 
 # MySQL Connecting:
 
 mydb=mysql.connector.connect(host='localhost',user='root',password='nehal292004!',database='khan_flights')
