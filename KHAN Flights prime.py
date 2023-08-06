@@ -10,7 +10,7 @@ from PIL import ImageTk,Image
  
 # MySQL Connecting:
 
-mydb=mysql.connector.connect(host='localhost',user='root',password='nehal292004!',database='khan_flights')
+mydb=mysql.connector.connect(host='localhost',user='root',password='',database='khan_flights')
 
 mcursor = mydb.cursor()
 update_query = "UPDATE flights SET FLIGHT_DATE = %s"
